@@ -29,7 +29,8 @@ const CodeRain = () => {
     ];
 
     const fontSize = 14;
-    const columns = Math.floor(canvas.width / fontSize);
+    const columnSpacing = fontSize * 3; // Space columns out a bit
+    const columns = Math.floor(canvas.width / columnSpacing);
     
     // Track each column's current term and reveal state
     interface ColumnState {
@@ -37,31 +38,30 @@ const CodeRain = () => {
       y: number;
       revealCount: number;
       lastRevealY: number;
+      speed: number;
     }
     
     const columnStates: ColumnState[] = new Array(columns).fill(null).map(() => {
-      const startY = Math.random() * -50 - 10;
+      const startY = Math.random() * -100 - 10;
       return {
         term: terms[Math.floor(Math.random() * terms.length)],
         y: startY,
         revealCount: 1,
-        lastRevealY: startY
+        lastRevealY: startY,
+        speed: 0.06 + Math.random() * 0.04 // Varied speeds
       };
     });
 
     const animate = () => {
       // Semi-transparent black to create fade effect
-      ctx.fillStyle = 'rgba(10, 15, 25, 0.03)';
+      ctx.fillStyle = 'rgba(10, 15, 25, 0.02)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.font = `${fontSize}px monospace`;
 
       for (let i = 0; i < columnStates.length; i++) {
-        // Only render some columns for subtlety
-        if (i % 4 !== 0) continue;
-
         const state = columnStates[i];
-        const x = i * fontSize;
+        const x = i * columnSpacing + columnSpacing / 2;
 
         // Draw all revealed letters of the word
         for (let k = 0; k < state.revealCount && k < state.term.length; k++) {
@@ -75,36 +75,36 @@ const CodeRain = () => {
           
           if (isLeadingChar) {
             // Glow effect on the leading character
-            ctx.shadowColor = 'hsla(199, 89%, 48%, 0.8)';
-            ctx.shadowBlur = 10;
-            ctx.fillStyle = 'hsla(199, 89%, 70%, 0.9)';
+            ctx.shadowColor = 'hsla(199, 89%, 48%, 0.9)';
+            ctx.shadowBlur = 15;
+            ctx.fillStyle = 'hsla(199, 89%, 75%, 1)';
             ctx.fillText(char, x, yPos);
             ctx.shadowBlur = 0;
           } else {
-            // Softer fill for older letters (trail effect)
-            const fadeAmount = 1 - (k / state.term.length) * 0.3;
-            ctx.fillStyle = `hsla(199, 89%, 48%, ${0.5 * fadeAmount})`;
+            // Trail letters - fade based on distance from head
+            const distanceFromHead = state.revealCount - 1 - k;
+            const opacity = Math.max(0.3, 0.8 - distanceFromHead * 0.15);
+            ctx.fillStyle = `hsla(199, 89%, 55%, ${opacity})`;
             ctx.fillText(char, x, yPos);
           }
         }
 
         // Reveal next letter when moved enough
-        if (state.y - state.lastRevealY >= 1.5 && state.revealCount < state.term.length) {
+        if (state.y - state.lastRevealY >= 1.2 && state.revealCount < state.term.length) {
           state.revealCount += 1;
           state.lastRevealY = state.y;
         }
 
-        // Reset when entire word has exited the screen
-        const wordBottomY = (state.y + state.term.length) * fontSize;
-        if (state.y * fontSize > canvas.height + fontSize) {
-          // Pick a new random term
+        // Reset when word has exited the screen
+        if (state.y * fontSize > canvas.height + fontSize * 2) {
           state.term = terms[Math.floor(Math.random() * terms.length)];
-          state.y = -state.term.length - Math.random() * 20;
+          state.y = -state.term.length - Math.random() * 30;
           state.revealCount = 1;
           state.lastRevealY = state.y;
+          state.speed = 0.06 + Math.random() * 0.04;
         }
 
-        state.y += 0.08;
+        state.y += state.speed;
       }
 
       animationRef.current = requestAnimationFrame(animate);
@@ -124,7 +124,7 @@ const CodeRain = () => {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.15 }}
+      style={{ opacity: 0.4 }}
     />
   );
 };
