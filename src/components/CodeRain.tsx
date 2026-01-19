@@ -28,8 +28,8 @@ const CodeRain = () => {
       'FEATURE', 'CLASSIFY', 'CLUSTER', 'REGRESS', 'GAN', 'VAE', 'CNN', 'RNN'
     ];
 
-    const fontSize = 14;
-    const columnSpacing = fontSize * 3; // Space columns out a bit
+    const fontSize = 20;
+    const columnSpacing = fontSize * 4; // Space columns for word readability
     const columns = Math.floor(canvas.width / columnSpacing);
     
     // Track each column's current term and reveal state
@@ -53,8 +53,8 @@ const CodeRain = () => {
     });
 
     const animate = () => {
-      // Semi-transparent black to create fade effect
-      ctx.fillStyle = 'rgba(10, 15, 25, 0.02)';
+      // Very subtle fade for longer trails
+      ctx.fillStyle = 'rgba(10, 15, 25, 0.008)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.font = `${fontSize}px monospace`;
@@ -74,17 +74,17 @@ const CodeRain = () => {
           const isLeadingChar = k === state.revealCount - 1;
           
           if (isLeadingChar) {
-            // Glow effect on the leading character
-            ctx.shadowColor = 'hsla(199, 89%, 48%, 0.9)';
-            ctx.shadowBlur = 15;
-            ctx.fillStyle = 'hsla(199, 89%, 75%, 1)';
+            // Subtle glow on leading character - readable text
+            ctx.shadowColor = 'hsla(199, 89%, 70%, 0.6)';
+            ctx.shadowBlur = 4;
+            ctx.fillStyle = 'hsla(199, 89%, 90%, 1)';
             ctx.fillText(char, x, yPos);
             ctx.shadowBlur = 0;
           } else {
-            // Trail letters - fade based on distance from head
+            // Solid trail letters - no transparency for clarity
             const distanceFromHead = state.revealCount - 1 - k;
-            const opacity = Math.max(0.3, 0.8 - distanceFromHead * 0.15);
-            ctx.fillStyle = `hsla(199, 89%, 55%, ${opacity})`;
+            const lightness = Math.max(45, 75 - distanceFromHead * 6);
+            ctx.fillStyle = `hsla(199, 89%, ${lightness}%, 1)`;
             ctx.fillText(char, x, yPos);
           }
         }
@@ -124,7 +124,7 @@ const CodeRain = () => {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.4 }}
+      style={{ opacity: 0.75 }}
     />
   );
 };
