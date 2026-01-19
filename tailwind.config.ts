@@ -57,6 +57,21 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Custom Resultyst colors
+        glass: {
+          DEFAULT: "hsl(var(--glass))",
+          border: "hsl(var(--glass-border))",
+        },
+        glow: {
+          primary: "hsl(var(--glow-primary))",
+          secondary: "hsl(var(--glow-secondary))",
+          accent: "hsl(var(--glow-accent))",
+        },
+        neural: {
+          node: "hsl(var(--neural-node))",
+          line: "hsl(var(--neural-line))",
+        },
+        particle: "hsl(var(--particle))",
       },
       borderRadius: {
         lg: "var(--radius)",
