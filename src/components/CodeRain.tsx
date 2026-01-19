@@ -36,12 +36,14 @@ const CodeRain = () => {
       term: string;
       charIndex: number;
       y: number;
+      lastCharY: number;
     }
     
     const columnStates: ColumnState[] = new Array(columns).fill(null).map(() => ({
       term: terms[Math.floor(Math.random() * terms.length)],
       charIndex: 0,
-      y: Math.random() * -100
+      y: Math.random() * -100,
+      lastCharY: 0
     }));
 
     const animate = () => {
@@ -76,17 +78,21 @@ const CodeRain = () => {
         ctx.fillText(char, x, y);
         ctx.shadowBlur = 0;
 
-        // Move to next character in the term
-        state.charIndex = (state.charIndex + 1) % state.term.length;
-        
-        // When term completes a cycle, occasionally pick a new term
-        if (state.charIndex === 0 && Math.random() > 0.7) {
-          state.term = terms[Math.floor(Math.random() * terms.length)];
+        // Only move to next character when we've fallen 1 unit (one character height)
+        if (state.y - state.lastCharY >= 1) {
+          state.charIndex = (state.charIndex + 1) % state.term.length;
+          state.lastCharY = state.y;
+          
+          // When term completes a cycle, occasionally pick a new term
+          if (state.charIndex === 0 && Math.random() > 0.7) {
+            state.term = terms[Math.floor(Math.random() * terms.length)];
+          }
         }
 
         // Reset drop randomly or when it goes off screen
         if (y > canvas.height && Math.random() > 0.975) {
           state.y = 0;
+          state.lastCharY = 0;
           state.term = terms[Math.floor(Math.random() * terms.length)];
           state.charIndex = 0;
         }
