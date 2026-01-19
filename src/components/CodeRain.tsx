@@ -19,18 +19,30 @@ const CodeRain = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Matrix characters (mix of AI/ML related symbols)
-    const chars = 'AIML01∑∏∫∂∇λσμπθ{}[]<>=/+*&|~^%#@!データ科学人工知能';
-    const charArray = chars.split('');
+    // AI/ML terms to display
+    const terms = [
+      'AI', 'ML', 'DATA', 'NEURAL', 'DEEP', 'LEARNING', 'GPT', 'LLM', 'NLP',
+      'VISION', 'AUTOMATION', 'RPA', 'TRANSFORMER', 'PREDICT', 'MODEL',
+      'ALGORITHM', 'TENSOR', 'GRADIENT', 'EPOCH', 'TRAIN', 'INFERENCE',
+      'ANALYTICS', 'SCIENCE', 'NETWORK', 'LAYER', 'NODE', 'WEIGHT', 'BIAS',
+      'FEATURE', 'CLASSIFY', 'CLUSTER', 'REGRESS', 'GAN', 'VAE', 'CNN', 'RNN'
+    ];
 
     const fontSize = 14;
     const columns = Math.floor(canvas.width / fontSize);
-    const drops: number[] = new Array(columns).fill(1);
-
-    // Randomize initial positions
-    for (let i = 0; i < drops.length; i++) {
-      drops[i] = Math.random() * -100;
+    
+    // Track each column's current term and character index
+    interface ColumnState {
+      term: string;
+      charIndex: number;
+      y: number;
     }
+    
+    const columnStates: ColumnState[] = new Array(columns).fill(null).map(() => ({
+      term: terms[Math.floor(Math.random() * terms.length)],
+      charIndex: 0,
+      y: Math.random() * -100
+    }));
 
     const animate = () => {
       // Semi-transparent black to create fade effect
@@ -39,13 +51,14 @@ const CodeRain = () => {
 
       ctx.font = `${fontSize}px monospace`;
 
-      for (let i = 0; i < drops.length; i++) {
+      for (let i = 0; i < columnStates.length; i++) {
         // Only render some columns for subtlety
         if (i % 4 !== 0) continue;
 
-        const char = charArray[Math.floor(Math.random() * charArray.length)];
+        const state = columnStates[i];
+        const char = state.term[state.charIndex];
         const x = i * fontSize;
-        const y = drops[i] * fontSize;
+        const y = state.y * fontSize;
 
         // Gradient effect - brighter at the bottom of the trail
         const gradient = ctx.createLinearGradient(x, y - 50, x, y);
@@ -63,12 +76,22 @@ const CodeRain = () => {
         ctx.fillText(char, x, y);
         ctx.shadowBlur = 0;
 
-        // Reset drop randomly or when it goes off screen
-        if (y > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
+        // Move to next character in the term
+        state.charIndex = (state.charIndex + 1) % state.term.length;
+        
+        // When term completes a cycle, occasionally pick a new term
+        if (state.charIndex === 0 && Math.random() > 0.7) {
+          state.term = terms[Math.floor(Math.random() * terms.length)];
         }
 
-        drops[i] += 0.5;
+        // Reset drop randomly or when it goes off screen
+        if (y > canvas.height && Math.random() > 0.975) {
+          state.y = 0;
+          state.term = terms[Math.floor(Math.random() * terms.length)];
+          state.charIndex = 0;
+        }
+
+        state.y += 0.5;
       }
 
       animationRef.current = requestAnimationFrame(animate);
