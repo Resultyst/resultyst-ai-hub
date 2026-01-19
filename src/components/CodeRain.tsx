@@ -1,5 +1,34 @@
 import { useEffect, useRef } from 'react';
 
+// Word categories with their colors
+const wordCategories = {
+  ml: {
+    terms: ['CNN', 'RNN', 'LSTM', 'GAN', 'VAE', 'TRAIN', 'EPOCH', 'GRADIENT', 'TENSOR', 'LAYER', 'WEIGHT', 'BIAS'],
+    hue: 199, // Cyan
+    saturation: 89
+  },
+  ai: {
+    terms: ['GPT', 'LLM', 'NLP', 'NEURAL', 'DEEP', 'TRANSFORMER', 'INFERENCE', 'MODEL', 'PREDICT'],
+    hue: 270, // Purple
+    saturation: 80
+  },
+  data: {
+    terms: ['DATA', 'ANALYTICS', 'SCIENCE', 'FEATURE', 'CLASSIFY', 'CLUSTER', 'REGRESS', 'ALGORITHM'],
+    hue: 160, // Green
+    saturation: 84
+  },
+  general: {
+    terms: ['AI', 'ML', 'LEARNING', 'AUTOMATION', 'RPA', 'VISION', 'NETWORK', 'NODE', 'CODE'],
+    hue: 330, // Pink
+    saturation: 85
+  }
+};
+
+// Flatten and tag all terms with their colors
+const allTerms = Object.entries(wordCategories).flatMap(([category, { terms, hue, saturation }]) =>
+  terms.map(term => ({ term, hue, saturation }))
+);
+
 const CodeRain = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
@@ -19,41 +48,41 @@ const CodeRain = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // AI/ML terms to display
-    const terms = [
-      'AI', 'ML', 'DATA', 'NEURAL', 'DEEP', 'LEARNING', 'GPT', 'LLM', 'NLP',
-      'VISION', 'AUTOMATION', 'RPA', 'TRANSFORMER', 'PREDICT', 'MODEL',
-      'ALGORITHM', 'TENSOR', 'GRADIENT', 'EPOCH', 'TRAIN', 'INFERENCE',
-      'ANALYTICS', 'SCIENCE', 'NETWORK', 'LAYER', 'NODE', 'WEIGHT', 'BIAS',
-      'FEATURE', 'CLASSIFY', 'CLUSTER', 'REGRESS', 'GAN', 'VAE', 'CNN', 'RNN'
-    ];
-
     const fontSize = 20;
-    const columnSpacing = fontSize * 4; // Space columns for word readability
+    const columnSpacing = fontSize * 4;
     const columns = Math.floor(canvas.width / columnSpacing);
     
-    // Track each column's current term and reveal state
     interface ColumnState {
       term: string;
+      hue: number;
+      saturation: number;
       y: number;
       revealCount: number;
       lastRevealY: number;
       speed: number;
     }
     
+    const getRandomTerm = () => {
+      const item = allTerms[Math.floor(Math.random() * allTerms.length)];
+      return item;
+    };
+
     const columnStates: ColumnState[] = new Array(columns).fill(null).map(() => {
       const startY = Math.random() * -100 - 10;
+      const { term, hue, saturation } = getRandomTerm();
       return {
-        term: terms[Math.floor(Math.random() * terms.length)],
+        term,
+        hue,
+        saturation,
         y: startY,
         revealCount: 1,
         lastRevealY: startY,
-        speed: 0.06 + Math.random() * 0.04 // Varied speeds
+        speed: 0.06 + Math.random() * 0.04
       };
     });
 
     const animate = () => {
-      // Clear canvas completely each frame - no fade accumulation
+      // Clear canvas completely each frame
       ctx.fillStyle = 'rgb(10, 15, 25)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -68,23 +97,22 @@ const CodeRain = () => {
           const char = state.term[k];
           const yPos = Math.floor(state.y + k) * fontSize;
           
-          // Skip if above screen
           if (yPos < 0) continue;
           
           const isLeadingChar = k === state.revealCount - 1;
           
           if (isLeadingChar) {
-            // Bright leading character with subtle glow
-            ctx.shadowColor = 'hsla(199, 89%, 60%, 0.8)';
+            // Bright leading character with glow in category color
+            ctx.shadowColor = `hsla(${state.hue}, ${state.saturation}%, 60%, 0.8)`;
             ctx.shadowBlur = 8;
-            ctx.fillStyle = 'hsla(199, 89%, 95%, 1)';
+            ctx.fillStyle = `hsla(${state.hue}, ${state.saturation}%, 95%, 1)`;
             ctx.fillText(char, x, yPos);
             ctx.shadowBlur = 0;
           } else {
-            // Trail letters - bright and readable
+            // Trail letters in category color
             const distanceFromHead = state.revealCount - 1 - k;
             const lightness = Math.max(40, 70 - distanceFromHead * 8);
-            ctx.fillStyle = `hsla(199, 89%, ${lightness}%, 1)`;
+            ctx.fillStyle = `hsla(${state.hue}, ${state.saturation}%, ${lightness}%, 1)`;
             ctx.fillText(char, x, yPos);
           }
         }
@@ -95,21 +123,24 @@ const CodeRain = () => {
           if (trailY > 0 && trailY < canvas.height) {
             const trailOpacity = 0.3 - (trail * 0.07);
             if (trailOpacity > 0) {
-              ctx.fillStyle = `hsla(199, 89%, 50%, ${trailOpacity})`;
+              ctx.fillStyle = `hsla(${state.hue}, ${state.saturation}%, 50%, ${trailOpacity})`;
               ctx.fillText('│', x, trailY);
             }
           }
         }
 
-        // Reveal next letter when moved enough
+        // Reveal next letter
         if (state.y - state.lastRevealY >= 1.2 && state.revealCount < state.term.length) {
           state.revealCount += 1;
           state.lastRevealY = state.y;
         }
 
-        // Reset when word has exited the screen
+        // Reset when word exits screen
         if (state.y * fontSize > canvas.height + fontSize * 2) {
-          state.term = terms[Math.floor(Math.random() * terms.length)];
+          const { term, hue, saturation } = getRandomTerm();
+          state.term = term;
+          state.hue = hue;
+          state.saturation = saturation;
           state.y = -state.term.length - Math.random() * 30;
           state.revealCount = 1;
           state.lastRevealY = state.y;
@@ -136,7 +167,7 @@ const CodeRain = () => {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.6 }}
+      style={{ opacity: 0.5 }}
     />
   );
 };

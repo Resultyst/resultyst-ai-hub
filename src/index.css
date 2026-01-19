@@ -2,68 +2,80 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Resultyst - Future-First Intelligence Lab
-   Design System: Dark Futuristic with AI/Data Science Aesthetics
-   All colors MUST be HSL.
-*/
-
+/* Resultyst Design System - AI Lab Aesthetic with Multi-Color Accents */
 @layer base {
   :root {
-    /* Force dark mode as default for the lab aesthetic */
-    --background: 222 47% 5%;
-    --foreground: 210 40% 98%;
-
-    --card: 222 47% 8%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222 47% 8%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 199 89% 48%;
-    --primary-foreground: 222 47% 5%;
-
-    --secondary: 263 70% 50%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 222 47% 15%;
-    --muted-foreground: 215 20% 65%;
-
-    --accent: 172 66% 50%;
-    --accent-foreground: 222 47% 5%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 222 47% 15%;
-    --input: 222 47% 15%;
-    --ring: 199 89% 48%;
-
-    --radius: 0.75rem;
-
-    /* Custom Resultyst tokens */
-    --glow-primary: 199 89% 48%;
-    --glow-secondary: 263 70% 50%;
-    --glow-accent: 172 66% 50%;
+    /* Core dark theme */
+    --background: 220 25% 6%;
+    --foreground: 210 20% 98%;
     
-    --gradient-start: 199 89% 48%;
-    --gradient-mid: 263 70% 50%;
-    --gradient-end: 172 66% 50%;
-
-    --glass: 222 47% 10%;
-    --glass-border: 222 47% 20%;
-
-    --neural-node: 199 89% 60%;
-    --neural-line: 199 89% 40%;
-    --particle: 172 66% 60%;
-
-    --sidebar-background: 222 47% 5%;
-    --sidebar-foreground: 210 40% 98%;
+    /* Primary - Electric Cyan */
+    --primary: 199 89% 48%;
+    --primary-foreground: 220 25% 6%;
+    
+    /* Secondary - Vibrant Purple */
+    --secondary: 270 80% 60%;
+    --secondary-foreground: 220 25% 6%;
+    
+    /* Accent - Hot Pink/Magenta */
+    --accent: 330 85% 60%;
+    --accent-foreground: 220 25% 6%;
+    
+    /* Tertiary - Emerald Green */
+    --tertiary: 160 84% 45%;
+    --tertiary-foreground: 220 25% 6%;
+    
+    /* Muted elements */
+    --muted: 220 20% 15%;
+    --muted-foreground: 215 20% 65%;
+    
+    /* Destructive */
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 210 20% 98%;
+    
+    /* UI Components */
+    --card: 220 25% 8%;
+    --card-foreground: 210 20% 98%;
+    --popover: 220 25% 7%;
+    --popover-foreground: 210 20% 98%;
+    --border: 220 20% 18%;
+    --input: 220 20% 18%;
+    --ring: 199 89% 48%;
+    
+    /* Chart colors - Multi-spectrum */
+    --chart-1: 199 89% 48%;
+    --chart-2: 270 80% 60%;
+    --chart-3: 330 85% 60%;
+    --chart-4: 160 84% 45%;
+    --chart-5: 45 93% 58%;
+    
+    /* Glow effects - Multi-color */
+    --glow-primary: 199 89% 48%;
+    --glow-secondary: 270 80% 60%;
+    --glow-accent: 330 85% 60%;
+    --glow-tertiary: 160 84% 45%;
+    
+    /* Glass effects */
+    --glass-bg: 220 25% 10% / 0.6;
+    --glass-border: 220 20% 25% / 0.3;
+    
+    /* Neural network aesthetics */
+    --neural-node: 199 89% 48%;
+    --neural-connection: 270 80% 60%;
+    --neural-pulse: 330 85% 60%;
+    
+    /* Sidebar */
+    --sidebar-background: 220 25% 7%;
+    --sidebar-foreground: 210 20% 98%;
     --sidebar-primary: 199 89% 48%;
-    --sidebar-primary-foreground: 222 47% 5%;
-    --sidebar-accent: 222 47% 15%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 222 47% 15%;
+    --sidebar-primary-foreground: 220 25% 6%;
+    --sidebar-accent: 220 25% 12%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 210 30% 15%;
     --sidebar-ring: 199 89% 48%;
+    
+    /* Radius */
+    --radius: 0.75rem;
   }
 }
 
