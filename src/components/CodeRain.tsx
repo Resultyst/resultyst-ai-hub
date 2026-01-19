@@ -91,7 +91,7 @@ const CodeRain = () => {
           state.charIndex = 0;
         }
 
-        state.y += 0.5;
+        state.y += 0.2;
       }
 
       animationRef.current = requestAnimationFrame(animate);
