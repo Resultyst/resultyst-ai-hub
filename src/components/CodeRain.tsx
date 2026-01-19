@@ -53,11 +53,11 @@ const CodeRain = () => {
     });
 
     const animate = () => {
-      // Very subtle fade for longer trails
-      ctx.fillStyle = 'rgba(10, 15, 25, 0.008)';
+      // Clear canvas completely each frame - no fade accumulation
+      ctx.fillStyle = 'rgb(10, 15, 25)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.font = `${fontSize}px monospace`;
+      ctx.font = `bold ${fontSize}px monospace`;
 
       for (let i = 0; i < columnStates.length; i++) {
         const state = columnStates[i];
@@ -66,7 +66,7 @@ const CodeRain = () => {
         // Draw all revealed letters of the word
         for (let k = 0; k < state.revealCount && k < state.term.length; k++) {
           const char = state.term[k];
-          const yPos = (state.y + k) * fontSize;
+          const yPos = Math.floor(state.y + k) * fontSize;
           
           // Skip if above screen
           if (yPos < 0) continue;
@@ -74,18 +74,30 @@ const CodeRain = () => {
           const isLeadingChar = k === state.revealCount - 1;
           
           if (isLeadingChar) {
-            // Subtle glow on leading character - readable text
-            ctx.shadowColor = 'hsla(199, 89%, 70%, 0.6)';
-            ctx.shadowBlur = 4;
-            ctx.fillStyle = 'hsla(199, 89%, 90%, 1)';
+            // Bright leading character with subtle glow
+            ctx.shadowColor = 'hsla(199, 89%, 60%, 0.8)';
+            ctx.shadowBlur = 8;
+            ctx.fillStyle = 'hsla(199, 89%, 95%, 1)';
             ctx.fillText(char, x, yPos);
             ctx.shadowBlur = 0;
           } else {
-            // Solid trail letters - no transparency for clarity
+            // Trail letters - bright and readable
             const distanceFromHead = state.revealCount - 1 - k;
-            const lightness = Math.max(45, 75 - distanceFromHead * 6);
+            const lightness = Math.max(40, 70 - distanceFromHead * 8);
             ctx.fillStyle = `hsla(199, 89%, ${lightness}%, 1)`;
             ctx.fillText(char, x, yPos);
+          }
+        }
+
+        // Draw fading trail behind the word
+        for (let trail = 1; trail <= 4; trail++) {
+          const trailY = Math.floor(state.y + state.revealCount - 1 + trail) * fontSize;
+          if (trailY > 0 && trailY < canvas.height) {
+            const trailOpacity = 0.3 - (trail * 0.07);
+            if (trailOpacity > 0) {
+              ctx.fillStyle = `hsla(199, 89%, 50%, ${trailOpacity})`;
+              ctx.fillText('│', x, trailY);
+            }
           }
         }
 
@@ -101,7 +113,7 @@ const CodeRain = () => {
           state.y = -state.term.length - Math.random() * 30;
           state.revealCount = 1;
           state.lastRevealY = state.y;
-          state.speed = 0.06 + Math.random() * 0.04;
+          state.speed = 0.08 + Math.random() * 0.05;
         }
 
         state.y += state.speed;
@@ -124,7 +136,7 @@ const CodeRain = () => {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.75 }}
+      style={{ opacity: 0.6 }}
     />
   );
 };
