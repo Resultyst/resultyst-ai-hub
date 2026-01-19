@@ -1,147 +1,169 @@
-import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { Cpu, FlaskConical, Newspaper, Bot, Lightbulb, Code } from 'lucide-react';
+import { Brain, Database, Bot, Sparkles } from 'lucide-react';
 
 const experiments = [
   {
+    icon: Brain,
+    title: 'AI Tools & Models',
+    description: 'Exploring cutting-edge language models, computer vision, and neural network architectures.',
+    color: 'cyan',
+    hsl: '199, 89%, 48%'
+  },
+  {
+    icon: Database,
+    title: 'Data Science Research',
+    description: 'Deep diving into analytics, visualization techniques, and predictive modeling.',
+    color: 'purple',
+    hsl: '270, 80%, 60%'
+  },
+  {
     icon: Bot,
-    title: 'AI Tools Curation',
-    description: 'Handpicked collection of cutting-edge AI tools, tested and reviewed for real-world use.',
-    color: 'primary',
-  },
-  {
-    icon: FlaskConical,
-    title: 'Research Breakdowns',
-    description: 'Complex research papers simplified into digestible insights for the curious mind.',
-    color: 'secondary',
-  },
-  {
-    icon: Cpu,
     title: 'Automation Systems',
-    description: 'Building intelligent workflows that bridge the gap between ideas and execution.',
-    color: 'accent',
+    description: 'Building intelligent automation pipelines and RPA solutions for real-world problems.',
+    color: 'pink',
+    hsl: '330, 85%, 60%'
   },
+  {
+    icon: Sparkles,
+    title: 'Creative AI',
+    description: 'Experimenting with generative AI, creative coding, and innovative applications.',
+    color: 'green',
+    hsl: '160, 84%, 45%'
+  }
 ];
 
-const ExperimentCard = ({ 
-  icon: Icon, 
-  title, 
-  description, 
-  color, 
-  index 
-}: { 
-  icon: typeof Bot; 
-  title: string; 
-  description: string; 
-  color: string; 
+interface ExperimentCardProps {
+  icon: typeof Brain;
+  title: string;
+  description: string;
+  color: string;
+  hsl: string;
   index: number;
-}) => {
+}
+
+const ExperimentCard = ({ icon: Icon, title, description, color, hsl, index }: ExperimentCardProps) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-50px' });
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
     <motion.div
       ref={ref}
       initial={{ opacity: 0, y: 50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay: index * 0.2 }}
-      whileHover={{ y: -10, scale: 1.02 }}
-      className={`group relative glass rounded-2xl p-8 gradient-border overflow-hidden cursor-pointer transition-all duration-500`}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+      transition={{ duration: 0.6, delay: index * 0.15 }}
+      className="group relative"
     >
-      {/* Hover glow effect */}
       <motion.div
-        className={`absolute inset-0 bg-${color}/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-      />
-      
-      {/* Circuit pattern on hover */}
-      <div className="absolute inset-0 circuit-pattern opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
-
-      {/* Animated corner accents */}
-      <div className={`absolute top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-${color}/0 group-hover:border-${color}/50 rounded-tl-2xl transition-all duration-500`} />
-      <div className={`absolute bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-${color}/0 group-hover:border-${color}/50 rounded-br-2xl transition-all duration-500`} />
-
-      <div className="relative z-10">
-        {/* Icon */}
+        className="relative p-8 rounded-2xl glass overflow-hidden h-full"
+        style={{
+          border: `1px solid hsla(${hsl}, 0.2)`,
+        }}
+        whileHover={{ 
+          scale: 1.02,
+          transition: { duration: 0.3 }
+        }}
+      >
+        {/* Colored glow on hover */}
         <motion.div
-          whileHover={{ rotate: 360 }}
-          transition={{ duration: 0.6 }}
-          className={`inline-flex items-center justify-center w-14 h-14 mb-6 rounded-xl bg-${color}/20 group-hover:bg-${color}/30 transition-colors duration-300`}
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          style={{
+            background: `radial-gradient(circle at center, hsla(${hsl}, 0.15) 0%, transparent 70%)`
+          }}
+        />
+
+        {/* Animated accent line */}
+        <motion.div
+          className="absolute top-0 left-0 h-1 rounded-t-2xl"
+          style={{ background: `hsl(${hsl})` }}
+          initial={{ width: 0 }}
+          animate={isInView ? { width: '100%' } : { width: 0 }}
+          transition={{ duration: 0.8, delay: index * 0.15 + 0.3 }}
+        />
+
+        {/* Icon with color */}
+        <motion.div
+          className="relative w-16 h-16 rounded-xl flex items-center justify-center mb-6"
+          style={{
+            background: `linear-gradient(135deg, hsla(${hsl}, 0.2), hsla(${hsl}, 0.05))`,
+            border: `1px solid hsla(${hsl}, 0.3)`,
+            boxShadow: `0 0 20px hsla(${hsl}, 0.2)`
+          }}
+          whileHover={{
+            boxShadow: `0 0 40px hsla(${hsl}, 0.4)`,
+            scale: 1.1
+          }}
         >
-          <Icon className={`w-7 h-7 text-${color}`} />
+          <Icon className="w-8 h-8" style={{ color: `hsl(${hsl})` }} />
         </motion.div>
 
-        {/* Content */}
-        <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors duration-300">
+        {/* Title */}
+        <h3 
+          className="text-xl font-bold mb-3 transition-colors duration-300"
+          style={{ color: `hsl(${hsl})` }}
+        >
           {title}
         </h3>
+
+        {/* Description */}
         <p className="text-muted-foreground leading-relaxed">
           {description}
         </p>
 
-        {/* Explore link */}
+        {/* Corner accent */}
         <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          whileHover={{ x: 5 }}
-          className="flex items-center gap-2 mt-6 text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-all duration-300"
-        >
-          <span>Explore</span>
-          <span>→</span>
-        </motion.div>
-      </div>
-
-      {/* Floating particles on hover */}
-      <motion.div
-        className={`absolute top-1/2 right-8 w-2 h-2 rounded-full bg-${color}/50`}
-        animate={{
-          y: [-20, 20, -20],
-          opacity: [0.3, 0.6, 0.3],
-        }}
-        transition={{ duration: 3, repeat: Infinity }}
-      />
-      <motion.div
-        className={`absolute top-1/3 right-16 w-1.5 h-1.5 rounded-full bg-${color}/40`}
-        animate={{
-          y: [10, -10, 10],
-          opacity: [0.2, 0.5, 0.2],
-        }}
-        transition={{ duration: 2.5, repeat: Infinity, delay: 0.5 }}
-      />
+          className="absolute bottom-0 right-0 w-20 h-20 opacity-20"
+          style={{
+            background: `radial-gradient(circle at bottom right, hsla(${hsl}, 0.5), transparent 70%)`
+          }}
+        />
+      </motion.div>
     </motion.div>
   );
 };
 
 const ExperimentsSection = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const headerRef = useRef(null);
+  const isHeaderInView = useInView(headerRef, { once: true, margin: "-100px" });
 
   return (
-    <section id="experiments" ref={ref} className="relative py-24 px-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+    <section id="experiments" className="relative py-32 px-4">
+      {/* Section header */}
+      <motion.div
+        ref={headerRef}
+        initial={{ opacity: 0, y: 30 }}
+        animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+        transition={{ duration: 0.8 }}
+        className="text-center mb-16"
+      >
+        <span 
+          className="inline-block px-4 py-1 rounded-full text-sm font-medium mb-4"
+          style={{
+            background: 'linear-gradient(135deg, hsla(270, 80%, 60%, 0.2), hsla(330, 85%, 60%, 0.1))',
+            border: '1px solid hsla(270, 80%, 60%, 0.3)',
+            color: 'hsl(270, 80%, 70%)'
+          }}
         >
-          <span className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider uppercase rounded-full bg-secondary/20 text-secondary">
-            Current Focus
+          Research Areas
+        </span>
+        <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          <span 
+            className="bg-clip-text text-transparent"
+            style={{ backgroundImage: 'linear-gradient(135deg, hsl(199, 89%, 60%), hsl(270, 80%, 70%))' }}
+          >
+            The Lab
           </span>
-          <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            <span className="gradient-text">Experiments</span> in Progress
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Exploring the intersection of artificial intelligence, automation, and human creativity.
-          </p>
-        </motion.div>
+        </h2>
+        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          Exploring the intersection of artificial intelligence, data science, and creative technology
+        </p>
+      </motion.div>
 
-        {/* Experiment cards */}
-        <div className="grid md:grid-cols-3 gap-8">
-          {experiments.map((experiment, index) => (
-            <ExperimentCard key={experiment.title} {...experiment} index={index} />
-          ))}
-        </div>
+      {/* Cards grid */}
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        {experiments.map((experiment, index) => (
+          <ExperimentCard key={experiment.title} {...experiment} index={index} />
+        ))}
       </div>
     </section>
   );

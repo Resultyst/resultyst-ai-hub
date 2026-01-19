@@ -1,90 +1,106 @@
-import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+
+const techTags = [
+  { name: 'Python', hsl: '199, 89%, 48%' },
+  { name: 'TensorFlow', hsl: '270, 80%, 60%' },
+  { name: 'PyTorch', hsl: '330, 85%, 60%' },
+  { name: 'LangChain', hsl: '160, 84%, 45%' },
+  { name: 'OpenAI', hsl: '199, 89%, 48%' },
+  { name: 'Hugging Face', hsl: '270, 80%, 60%' },
+  { name: 'Data Analysis', hsl: '330, 85%, 60%' },
+  { name: 'Computer Vision', hsl: '160, 84%, 45%' },
+];
 
 const AboutSection = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="relative py-24 px-4">
-      <div className="max-w-4xl mx-auto">
+    <section id="about" ref={ref} className="relative py-32 px-4">
+      {/* Background pattern */}
+      <div className="absolute inset-0 circuit-pattern opacity-5" />
+      
+      {/* Gradient orb with purple */}
+      <motion.div
+        className="absolute top-1/3 right-1/4 w-80 h-80 rounded-full blur-3xl"
+        style={{ background: 'radial-gradient(circle, hsla(270, 80%, 60%, 0.1) 0%, transparent 70%)' }}
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.5, 0.3],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+
+      <div className="relative max-w-4xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8 }}
-          className="glass rounded-3xl p-8 md:p-12 gradient-border relative overflow-hidden"
+          className="text-center mb-12"
         >
-          {/* Background pattern */}
-          <div className="absolute inset-0 circuit-pattern opacity-30" />
-          
-          {/* Animated gradient orb */}
-          <motion.div
-            className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 blur-3xl"
-            animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, 90, 0],
+          <span 
+            className="inline-block px-4 py-1 rounded-full text-sm font-medium mb-4"
+            style={{
+              background: 'linear-gradient(135deg, hsla(330, 85%, 60%, 0.2), hsla(270, 80%, 60%, 0.1))',
+              border: '1px solid hsla(330, 85%, 60%, 0.3)',
+              color: 'hsl(330, 85%, 70%)'
             }}
-            transition={{ duration: 10, repeat: Infinity }}
-          />
+          >
+            About
+          </span>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <span 
+              className="bg-clip-text text-transparent"
+              style={{ backgroundImage: 'linear-gradient(135deg, hsl(270, 80%, 70%), hsl(330, 85%, 60%))' }}
+            >
+              The Vision
+            </span>
+          </h2>
+        </motion.div>
 
-          <div className="relative z-10">
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-lg text-muted-foreground text-center mb-12 leading-relaxed"
+        >
+          Resultyst is a personal lab for exploring the frontiers of artificial intelligence 
+          and data science. Here, ideas are tested, models are trained, and innovations are 
+          documented for the community to learn and build upon.
+        </motion.p>
+
+        {/* Tech tags with varied colors */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="flex flex-wrap justify-center gap-3"
+        >
+          {techTags.map((tag, index) => (
             <motion.span
-              initial={{ opacity: 0, x: -20 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="inline-block px-3 py-1 mb-6 text-xs font-semibold tracking-wider uppercase rounded-full bg-primary/20 text-primary"
+              key={tag.name}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.4, delay: 0.5 + index * 0.05 }}
+              className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105"
+              style={{
+                background: `linear-gradient(135deg, hsla(${tag.hsl}, 0.15), hsla(${tag.hsl}, 0.05))`,
+                border: `1px solid hsla(${tag.hsl}, 0.3)`,
+                color: `hsl(${tag.hsl})`,
+                boxShadow: `0 0 15px hsla(${tag.hsl}, 0.1)`
+              }}
+              whileHover={{
+                boxShadow: `0 0 25px hsla(${tag.hsl}, 0.3)`
+              }}
             >
-              About the Lab
+              {tag.name}
             </motion.span>
-
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-3xl md:text-4xl font-bold mb-6"
-            >
-              Where <span className="gradient-text">AI meets curiosity</span>
-            </motion.h2>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="space-y-4 text-muted-foreground text-lg leading-relaxed"
-            >
-              <p>
-                I'm a GenAI enthusiast with hands-on experience in RPA and automation, 
-                exploring the frontier of artificial intelligence and data science.
-              </p>
-              <p>
-                <span className="text-primary font-medium">Resultyst</span> is my experimental space — 
-                a lab for ideas, systems, and future-first intelligence. Here, I break down 
-                complex AI concepts, curate cutting-edge tools, and share insights from the 
-                ever-evolving world of technology.
-              </p>
-            </motion.div>
-
-            {/* Tech stack badges */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="flex flex-wrap gap-3 mt-8"
-            >
-              {['GenAI', 'RPA', 'Automation', 'Data Science', 'AI Research'].map((tag, index) => (
-                <motion.span
-                  key={tag}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
-                  className="px-4 py-2 text-sm font-medium rounded-full bg-muted/50 text-foreground border border-border/50 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 cursor-default"
-                >
-                  {tag}
-                </motion.span>
-              ))}
-            </motion.div>
-          </div>
+          ))}
         </motion.div>
       </div>
     </section>
