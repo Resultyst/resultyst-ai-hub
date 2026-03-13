@@ -6,11 +6,11 @@ import { Youtube, Instagram, MessageCircle, ExternalLink } from 'lucide-react';
 const socialLinks = [
   {
     name: 'YouTube',
-    description: 'AI tutorials, tool reviews & deep dives',
+    description: 'Robotics, AI tool tutorials deep dives',
     icon: Youtube,
     color: 'from-red-500 to-red-600',
     hoverGlow: 'hover:shadow-[0_0_30px_rgba(239,68,68,0.4)]',
-    url: '#',
+    url: 'https://www.youtube.com/@Resultyst',
   },
   {
     name: 'Instagram',
@@ -18,7 +18,7 @@ const socialLinks = [
     icon: Instagram,
     color: 'from-purple-500 via-pink-500 to-orange-400',
     hoverGlow: 'hover:shadow-[0_0_30px_rgba(168,85,247,0.4)]',
-    url: '#',
+    url: 'https://www.instagram.com/resultyst/',
   },
   {
     name: 'WhatsApp',
@@ -26,7 +26,7 @@ const socialLinks = [
     icon: MessageCircle,
     color: 'from-green-500 to-green-600',
     hoverGlow: 'hover:shadow-[0_0_30px_rgba(34,197,94,0.4)]',
-    url: '#',
+    url: 'https://whatsapp.com/channel/0029Vb5BpZWFXUubAH4nWI37',
   },
 ];
 
