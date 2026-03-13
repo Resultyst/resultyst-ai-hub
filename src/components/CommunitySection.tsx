@@ -15,7 +15,7 @@ const socialLinks = [
   },
   {
     name: 'Instagram',
-    description: 'Daily AI insights & community updates',
+    description: 'AI insights & community updates',
     icon: Instagram,
     color: 'from-purple-500 via-pink-500 to-orange-400',
     hoverGlow: 'hover:shadow-[0_0_30px_rgba(168,85,247,0.4)]',
