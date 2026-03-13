@@ -51,7 +51,7 @@ const CommunitySection = () => {
             Connect
           </span>
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            Join the <span className="gradient-text">Community</span>
+            Join the Community
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Be part of a growing community exploring the future of AI and technology.
