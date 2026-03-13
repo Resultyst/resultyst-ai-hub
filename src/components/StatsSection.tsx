@@ -3,10 +3,10 @@ import { useRef, useState, useEffect } from 'react';
 import { Users, Code, Sparkles, Calendar } from 'lucide-react';
 
 const stats = [
-  { icon: Users, value: 10000, label: 'Community Members', suffix: '+', hsl: '330, 85%, 60%' },
-  { icon: Code, value: 50, label: 'AI Projects', suffix: '+', hsl: '199, 89%, 48%' },
-  { icon: Sparkles, value: 25, label: 'Research Papers', suffix: '+', hsl: '270, 80%, 60%' },
-  { icon: Calendar, value: 5, label: 'Years Experience', suffix: '+', hsl: '160, 84%, 45%' },
+  { icon: Users, value: 5600, label: 'Subscribers', suffix: '+', hsl: '330, 85%, 60%' },
+  { icon: Code, value: 15, label: 'AI Projects', suffix: '+', hsl: '199, 89%, 48%' },
+  { icon: Sparkles, value: 5, label: 'Research Papers', suffix: '+', hsl: '270, 80%, 60%' },
+  { icon: Calendar, value: 2, label: 'Years Experience', suffix: '+', hsl: '160, 84%, 45%' },
 ];
 
 interface AnimatedCounterProps {
