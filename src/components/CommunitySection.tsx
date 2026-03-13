@@ -11,6 +11,7 @@ const socialLinks = [
     color: 'from-red-500 to-red-600',
     hoverGlow: 'hover:shadow-[0_0_30px_rgba(239,68,68,0.4)]',
     url: 'https://www.youtube.com/@Resultyst',
+    cta: 'Subscribe',
   },
   {
     name: 'Instagram',
@@ -19,6 +20,7 @@ const socialLinks = [
     color: 'from-purple-500 via-pink-500 to-orange-400',
     hoverGlow: 'hover:shadow-[0_0_30px_rgba(168,85,247,0.4)]',
     url: 'https://www.instagram.com/resultyst/',
+    cta: 'Follow',
   },
   {
     name: 'WhatsApp',
@@ -27,6 +29,7 @@ const socialLinks = [
     color: 'from-green-500 to-green-600',
     hoverGlow: 'hover:shadow-[0_0_30px_rgba(34,197,94,0.4)]',
     url: 'https://whatsapp.com/channel/0029Vb5BpZWFXUubAH4nWI37',
+    cta: 'Follow',
   },
 ];
 
@@ -57,7 +60,7 @@ const CommunitySection = () => {
 
         {/* Social links */}
         <div className="grid md:grid-cols-3 gap-6">
-          {socialLinks.map(({ name, description, icon: Icon, color, hoverGlow, url }, index) => (
+          {socialLinks.map(({ name, description, icon: Icon, color, hoverGlow, url,cta }, index) => (
             <motion.a
               key={name}
               href={url}
@@ -91,7 +94,7 @@ const CommunitySection = () => {
 
               {/* Link indicator */}
               <div className="flex items-center justify-center gap-2 text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <span>Follow</span>
+                <span>{cta}</span>
                 <ExternalLink className="w-4 h-4" />
               </div>
 
