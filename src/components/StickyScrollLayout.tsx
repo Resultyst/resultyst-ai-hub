@@ -65,10 +65,17 @@ const StickyCard = ({ component, accentColor, index, total, scrollYProgress }: S
     [0, 0, -24, -24]
   );
 
+  const rawOpacity = useTransform(
+    scrollYProgress,
+    [0, startProgress, endProgress, 1],
+    [1, 1, 0, 0]
+  );
+
   // Conditional transforms only active when sticky layout criteria is met
   const scale = !isDesktopSticky || isLast ? 1 : rawScale;
   const scrimOpacity = !isDesktopSticky || isLast ? 0 : rawScrimOpacity;
   const translateY = !isDesktopSticky || isLast ? 0 : rawTranslateY;
+  const contentOpacity = !isDesktopSticky || isLast ? 1 : rawOpacity;
 
   return (
     <div
@@ -155,9 +162,12 @@ const StickyCard = ({ component, accentColor, index, total, scrollYProgress }: S
         )}
 
         {/* Section content */}
-        <div className="relative z-[5] h-full w-full flex items-center justify-center">
+        <motion.div 
+          className="relative z-[5] h-full w-full flex items-center justify-center"
+          style={{ opacity: contentOpacity }}
+        >
           {component}
-        </div>
+        </motion.div>
       </motion.div>
     </div>
   );
