@@ -27,11 +27,15 @@ interface StickyCardProps {
 }
 
 const StickyCard = ({ component, accentColor, index, total, scrollYProgress }: StickyCardProps) => {
-  const [isDesktop, setIsDesktop] = useState(false);
+  const [isDesktopWidth, setIsDesktopWidth] = useState(false);
+  const [isDesktopSticky, setIsDesktopSticky] = useState(false);
 
   useEffect(() => {
     const checkSize = () => {
-      setIsDesktop(window.innerWidth >= 768 && window.innerHeight >= 700);
+      const widthCheck = window.innerWidth >= 768;
+      const heightCheck = window.innerHeight >= 700;
+      setIsDesktopWidth(widthCheck);
+      setIsDesktopSticky(widthCheck && heightCheck);
     };
     checkSize();
     window.addEventListener('resize', checkSize);
@@ -61,10 +65,10 @@ const StickyCard = ({ component, accentColor, index, total, scrollYProgress }: S
     [0, 0, -24, -24]
   );
 
-  // Conditional transforms only active on desktop viewports
-  const scale = !isDesktop || isLast ? 1 : rawScale;
-  const scrimOpacity = !isDesktop || isLast ? 0 : rawScrimOpacity;
-  const translateY = !isDesktop || isLast ? 0 : rawTranslateY;
+  // Conditional transforms only active when sticky layout criteria is met
+  const scale = !isDesktopSticky || isLast ? 1 : rawScale;
+  const scrimOpacity = !isDesktopSticky || isLast ? 0 : rawScrimOpacity;
+  const translateY = !isDesktopSticky || isLast ? 0 : rawTranslateY;
 
   return (
     <div
@@ -74,83 +78,69 @@ const StickyCard = ({ component, accentColor, index, total, scrollYProgress }: S
       <motion.div
         className="card-panel relative h-auto md:h-[88vh] w-full md:w-[94%] md:max-w-6xl py-12 md:py-0 flex items-center justify-center"
         style={{
-          borderRadius: isDesktop ? '1.75rem' : '0',
+          borderRadius: isDesktopWidth ? '1.75rem' : '1.25rem',
           overflow: 'hidden',
           scale,
           y: translateY,
           transformOrigin: 'top center',
-          // Glassmorphism border — subtle accent-tinted edge
-          borderWidth: isDesktop ? '1px' : '0',
-          borderStyle: isDesktop ? 'solid' : 'none',
-          borderColor: isDesktop ? `hsla(${accentColor || '28, 95%, 55%'}, 0.18)` : 'transparent',
-          boxShadow: isDesktop 
-            ? `0 8px 32px rgba(0, 0, 0, 0.3),
-               0 2px 12px rgba(0, 0, 0, 0.2),
-               0 0 30px hsla(${accentColor || '28, 95%, 55%'}, 0.1),
-               inset 0 1px 0 rgba(255, 255, 255, 0.07),
-               inset 0 -1px 0 rgba(255, 255, 255, 0.03)`
-            : 'none',
+          // Glassmorphism border — subtle accent-tinted edge (always visible for visual structure)
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: `hsla(${accentColor || '28, 95%, 55%'}, 0.18)`,
+          boxShadow: `0 8px 32px rgba(0, 0, 0, 0.3),
+                     0 2px 12px rgba(0, 0, 0, 0.2),
+                     0 0 30px hsla(${accentColor || '28, 95%, 55%'}, 0.1),
+                     inset 0 1px 0 rgba(255, 255, 255, 0.07),
+                     inset 0 -1px 0 rgba(255, 255, 255, 0.03)`,
         }}
       >
         {/* Top accent glow line — vivid neon strip */}
-        {isDesktop && (
-          <div
-            className="absolute top-0 left-0 right-0 h-[2px] z-20"
-            style={{
-              background: `linear-gradient(90deg, transparent 5%, hsla(${accentColor || '28, 95%, 55%'}, 0.7) 30%, hsla(${accentColor || '28, 95%, 55%'}, 0.9) 50%, hsla(${accentColor || '28, 95%, 55%'}, 0.7) 70%, transparent 95%)`,
-            }}
-          />
-        )}
+        <div
+          className="absolute top-0 left-0 right-0 h-[2px] z-20"
+          style={{
+            background: `linear-gradient(90deg, transparent 5%, hsla(${accentColor || '28, 95%, 55%'}, 0.7) 30%, hsla(${accentColor || '28, 95%, 55%'}, 0.9) 50%, hsla(${accentColor || '28, 95%, 55%'}, 0.7) 70%, transparent 95%)`,
+          }}
+        />
 
         {/* Bottom subtle accent line */}
-        {isDesktop && (
-          <div
-            className="absolute bottom-0 left-0 right-0 h-[1px] z-20"
-            style={{
-              background: `linear-gradient(90deg, transparent 10%, hsla(${accentColor || '28, 95%, 55%'}, 0.2) 40%, hsla(${accentColor || '28, 95%, 55%'}, 0.35) 50%, hsla(${accentColor || '28, 95%, 55%'}, 0.2) 60%, transparent 90%)`,
-            }}
-          />
-        )}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-[1px] z-20"
+          style={{
+            background: `linear-gradient(90deg, transparent 10%, hsla(${accentColor || '28, 95%, 55%'}, 0.2) 40%, hsla(${accentColor || '28, 95%, 55%'}, 0.35) 50%, hsla(${accentColor || '28, 95%, 55%'}, 0.2) 60%, transparent 90%)`,
+          }}
+        />
 
         {/* Left edge subtle glow */}
-        {isDesktop && (
-          <div
-            className="absolute top-0 left-0 bottom-0 w-[1px] z-20"
-            style={{
-              background: `linear-gradient(180deg, transparent 10%, hsla(${accentColor || '28, 95%, 55%'}, 0.15) 30%, hsla(${accentColor || '28, 95%, 55%'}, 0.25) 50%, hsla(${accentColor || '28, 95%, 55%'}, 0.15) 70%, transparent 90%)`,
-            }}
-          />
-        )}
+        <div
+          className="absolute top-0 left-0 bottom-0 w-[1px] z-20"
+          style={{
+            background: `linear-gradient(180deg, transparent 10%, hsla(${accentColor || '28, 95%, 55%'}, 0.15) 30%, hsla(${accentColor || '28, 95%, 55%'}, 0.25) 50%, hsla(${accentColor || '28, 95%, 55%'}, 0.15) 70%, transparent 90%)`,
+          }}
+        />
 
         {/* Right edge subtle glow */}
-        {isDesktop && (
-          <div
-            className="absolute top-0 right-0 bottom-0 w-[1px] z-20"
-            style={{
-              background: `linear-gradient(180deg, transparent 10%, hsla(${accentColor || '28, 95%, 55%'}, 0.15) 30%, hsla(${accentColor || '28, 95%, 55%'}, 0.25) 50%, hsla(${accentColor || '28, 95%, 55%'}, 0.15) 70%, transparent 90%)`,
-            }}
-          />
-        )}
+        <div
+          className="absolute top-0 right-0 bottom-0 w-[1px] z-20"
+          style={{
+            background: `linear-gradient(180deg, transparent 10%, hsla(${accentColor || '28, 95%, 55%'}, 0.15) 30%, hsla(${accentColor || '28, 95%, 55%'}, 0.25) 50%, hsla(${accentColor || '28, 95%, 55%'}, 0.15) 70%, transparent 90%)`,
+          }}
+        />
 
         {/* Corner accent glow — top-left */}
-        {isDesktop && (
-          <div
-            className="absolute top-0 left-0 w-24 h-24 z-10 pointer-events-none"
-            style={{
-              background: `radial-gradient(circle at top left, hsla(${accentColor || '28, 95%, 55%'}, 0.12), transparent 70%)`,
-            }}
-          />
-        )}
+        <div
+          className="absolute top-0 left-0 w-24 h-24 z-10 pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at top left, hsla(${accentColor || '28, 95%, 55%'}, 0.12), transparent 70%)`,
+          }}
+        />
 
         {/* Corner accent glow — top-right */}
-        {isDesktop && (
-          <div
-            className="absolute top-0 right-0 w-24 h-24 z-10 pointer-events-none"
-            style={{
-              background: `radial-gradient(circle at top right, hsla(${accentColor || '28, 95%, 55%'}, 0.1), transparent 70%)`,
-            }}
-          />
-        )}
+        <div
+          className="absolute top-0 right-0 w-24 h-24 z-10 pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at top right, hsla(${accentColor || '28, 95%, 55%'}, 0.1), transparent 70%)`,
+          }}
+        />
 
         {/* Stacking scrim — glass-tinted dark overlay instead of pure black */}
         {!isLast && (
