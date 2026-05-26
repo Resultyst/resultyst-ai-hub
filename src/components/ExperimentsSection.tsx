@@ -6,30 +6,34 @@ const experiments = [
   {
     icon: Brain,
     title: 'AI Tools & Models',
-    description: 'Exploring cutting-edge language models, computer vision, and neural network architectures.',
-    color: 'cyan',
-    hsl: '199, 89%, 48%'
+    description: 'Exploring powerful AI tools, LLMs, open-source models and next-generation AI workflows',
+    color: 'orange',
+    hsl: '28, 95%, 55%',
+    url: 'https://www.youtube.com/@Resultyst'
   },
   {
     icon: Database,
     title: 'Data Science Research',
-    description: 'Deep diving into analytics, visualization techniques, and predictive modeling.',
-    color: 'purple',
-    hsl: '270, 80%, 60%'
+    description: 'Exploring analytics, visualization, predictive systems and real-world data intelligence',
+    color: 'navy',
+    hsl: '215, 90%, 55%',
+    url: 'https://www.youtube.com/@Resultyst'
   },
   {
     icon: Bot,
     title: 'Automation Systems',
-    description: 'Building intelligent automation pipelines and RPA solutions for real-world problems.',
-    color: 'pink',
-    hsl: '330, 85%, 60%'
+    description: 'Building AI-powered workflows, automations and systems that simplify real-world tasks',
+    color: 'navy',
+    hsl: '215, 90%, 55%',
+    url: 'https://www.youtube.com/@Resultyst'
   },
   {
     icon: Sparkles,
     title: 'Creative AI',
-    description: 'Experimenting with generative AI, creative coding, and innovative applications.',
-    color: 'green',
-    hsl: '160, 84%, 45%'
+    description: 'Exploring content creation and creative workflows that can augment our intelligence through the use of artificial intelligence',
+    color: 'orange',
+    hsl: '28, 95%, 55%',
+    url: 'https://www.youtube.com/@Resultyst'
   }
 ];
 
@@ -39,10 +43,11 @@ interface ExperimentCardProps {
   description: string;
   color: string;
   hsl: string;
+  url: string;
   index: number;
 }
 
-const ExperimentCard = ({ icon: Icon, title, description, color, hsl, index }: ExperimentCardProps) => {
+const ExperimentCard = ({ icon: Icon, title, description, color, hsl, url, index }: ExperimentCardProps) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -55,7 +60,7 @@ const ExperimentCard = ({ icon: Icon, title, description, color, hsl, index }: E
       className="group relative"
     >
       <motion.div
-        className="relative p-8 rounded-2xl glass overflow-hidden h-full"
+        className="relative p-4 sm:p-5 rounded-2xl glass overflow-hidden h-full"
         style={{
           border: `1px solid hsla(${hsl}, 0.2)`,
         }}
@@ -83,36 +88,36 @@ const ExperimentCard = ({ icon: Icon, title, description, color, hsl, index }: E
 
         {/* Icon with color */}
         <motion.div
-          className="relative w-16 h-16 rounded-xl flex items-center justify-center mb-6"
+          className="relative w-10 h-10 rounded-xl flex items-center justify-center mb-3"
           style={{
             background: `linear-gradient(135deg, hsla(${hsl}, 0.2), hsla(${hsl}, 0.05))`,
             border: `1px solid hsla(${hsl}, 0.3)`,
-            boxShadow: `0 0 20px hsla(${hsl}, 0.2)`
+            boxShadow: `0 0 15px hsla(${hsl}, 0.15)`
           }}
           whileHover={{
-            boxShadow: `0 0 40px hsla(${hsl}, 0.4)`,
+            boxShadow: `0 0 30px hsla(${hsl}, 0.35)`,
             scale: 1.1
           }}
         >
-          <Icon className="w-8 h-8" style={{ color: `hsl(${hsl})` }} />
+          <Icon className="w-6 h-6" style={{ color: `hsl(${hsl})` }} />
         </motion.div>
 
         {/* Title */}
         <h3 
-          className="text-xl font-bold mb-3 transition-colors duration-300"
+          className="text-base sm:text-lg font-bold mb-1.5 transition-colors duration-300"
           style={{ color: `hsl(${hsl})` }}
         >
           {title}
         </h3>
 
         {/* Description */}
-        <p className="text-muted-foreground leading-relaxed">
+        <p className="text-slate-300 text-sm leading-relaxed mb-0">
           {description}
         </p>
 
         {/* Corner accent */}
         <motion.div
-          className="absolute bottom-0 right-0 w-20 h-20 opacity-20"
+          className="absolute bottom-0 right-0 w-16 h-16 opacity-15"
           style={{
             background: `radial-gradient(circle at bottom right, hsla(${hsl}, 0.5), transparent 70%)`
           }}
@@ -127,43 +132,45 @@ const ExperimentsSection = () => {
   const isHeaderInView = useInView(headerRef, { once: true, margin: "-100px" });
 
   return (
-    <section id="experiments" className="relative py-32 px-4">
-      {/* Section header */}
-      <motion.div
-        ref={headerRef}
-        initial={{ opacity: 0, y: 30 }}
-        animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-        transition={{ duration: 0.8 }}
-        className="text-center mb-16"
-      >
-        <span 
-          className="inline-block px-4 py-1 rounded-full text-sm font-medium mb-4"
-          style={{
-            background: 'linear-gradient(135deg, hsla(270, 80%, 60%, 0.2), hsla(330, 85%, 60%, 0.1))',
-            border: '1px solid hsla(270, 80%, 60%, 0.3)',
-            color: 'hsl(270, 80%, 70%)'
-          }}
+    <section id="experiments" className="relative h-full w-full flex flex-col items-center justify-center overflow-hidden px-6 py-8">
+      <div className="w-full max-w-5xl mx-auto flex flex-col items-center px-4 sm:px-6">
+        {/* Section header */}
+        <motion.div
+          ref={headerRef}
+          initial={{ opacity: 0, y: 30 }}
+          animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-8 sm:mb-10 w-full max-w-2xl"
         >
-          Research Areas
-        </span>
-        <h2 className="text-4xl md:text-5xl font-bold mb-4">
           <span 
-            className="bg-clip-text text-transparent"
-            style={{ backgroundImage: 'linear-gradient(135deg, hsl(199, 89%, 60%), hsl(270, 80%, 70%))' }}
+            className="inline-block px-4 py-1 rounded-full text-sm font-medium mb-4"
+            style={{
+              background: 'linear-gradient(135deg, hsla(28, 95%, 55%, 0.2), hsla(215, 90%, 55%, 0.1))',
+              border: '1px solid hsla(28, 95%, 55%, 0.3)',
+              color: 'hsl(28, 95%, 70%)'
+            }}
           >
-            The Lab
+            AI Ecosystem
           </span>
-        </h2>
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          Exploring the intersection of artificial intelligence, data science, and creative technology
-        </p>
-      </motion.div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">
+            <span 
+              className="bg-clip-text text-transparent"
+              style={{ backgroundImage: 'linear-gradient(135deg, hsl(28, 95%, 60%), hsl(215, 90%, 60%))' }}
+            >
+              The AI Hub
+            </span>
+          </h2>
+          <p className="text-white text-sm sm:text-base max-w-2xl mx-auto">
+            Discovering the fast-moving world of AI through tools, experiments, hackathons and community-driven innovation
+          </p>
+        </motion.div>
 
-      {/* Cards grid */}
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-        {experiments.map((experiment, index) => (
-          <ExperimentCard key={experiment.title} {...experiment} index={index} />
-        ))}
+        {/* Cards grid */}
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+          {experiments.map((experiment, index) => (
+            <ExperimentCard key={experiment.title} {...experiment} index={index} />
+          ))}
+        </div>
       </div>
     </section>
   );

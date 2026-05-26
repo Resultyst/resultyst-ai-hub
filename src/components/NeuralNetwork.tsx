@@ -13,6 +13,7 @@ const NeuralNetwork = () => {
   const animationRef = useRef<number>();
   const nodesRef = useRef<Node[]>([]);
   const mouseRef = useRef({ x: 0, y: 0 });
+  const isPausedRef = useRef(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -20,6 +21,8 @@ const NeuralNetwork = () => {
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    const isMobile = window.innerWidth < 768;
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
@@ -29,8 +32,19 @@ const NeuralNetwork = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Initialize nodes
-    const nodeCount = Math.min(80, Math.floor((window.innerWidth * window.innerHeight) / 15000));
+    // Pause when tab is not visible
+    const handleVisibility = () => {
+      isPausedRef.current = document.hidden;
+      if (!document.hidden && !animationRef.current) {
+        animationRef.current = requestAnimationFrame(animate);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    // Fewer nodes on mobile
+    const nodeCount = isMobile
+      ? Math.min(30, Math.floor((window.innerWidth * window.innerHeight) / 25000))
+      : Math.min(80, Math.floor((window.innerWidth * window.innerHeight) / 15000));
     const nodes: Node[] = [];
 
     for (let i = 0; i < nodeCount; i++) {
@@ -45,30 +59,40 @@ const NeuralNetwork = () => {
 
     nodesRef.current = nodes;
 
-    // Mouse tracking
+    // Mouse tracking (desktop only)
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
     };
-    window.addEventListener('mousemove', handleMouseMove);
+    if (!isMobile) {
+      window.addEventListener('mousemove', handleMouseMove);
+    }
+
+    // Reduced connection distance on mobile
+    const connectionDistance = isMobile ? 100 : 150;
+    const mouseInfluence = 200;
 
     // Animation loop
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (isPausedRef.current) {
+        animationRef.current = undefined;
+        return;
+      }
 
-      const connectionDistance = 150;
-      const mouseInfluence = 200;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Update and draw nodes
       nodes.forEach((node, i) => {
-        // Mouse influence
-        const dx = mouseRef.current.x - node.x;
-        const dy = mouseRef.current.y - node.y;
-        const mouseDistance = Math.sqrt(dx * dx + dy * dy);
+        // Mouse influence (desktop only)
+        if (!isMobile) {
+          const dx = mouseRef.current.x - node.x;
+          const dy = mouseRef.current.y - node.y;
+          const mouseDistance = Math.sqrt(dx * dx + dy * dy);
 
-        if (mouseDistance < mouseInfluence) {
-          const force = (1 - mouseDistance / mouseInfluence) * 0.02;
-          node.vx += dx * force;
-          node.vy += dy * force;
+          if (mouseDistance < mouseInfluence) {
+            const force = (1 - mouseDistance / mouseInfluence) * 0.02;
+            node.vx += dx * force;
+            node.vy += dy * force;
+          }
         }
 
         // Apply velocity with damping
@@ -97,9 +121,9 @@ const NeuralNetwork = () => {
             
             // Create gradient for connection
             const gradient = ctx.createLinearGradient(node.x, node.y, other.x, other.y);
-            gradient.addColorStop(0, `hsla(199, 89%, 48%, ${opacity})`);
-            gradient.addColorStop(0.5, `hsla(263, 70%, 50%, ${opacity})`);
-            gradient.addColorStop(1, `hsla(172, 66%, 50%, ${opacity})`);
+            gradient.addColorStop(0, `hsla(28, 95%, 55%, ${opacity})`);
+            gradient.addColorStop(0.5, `hsla(45, 93%, 58%, ${opacity})`);
+            gradient.addColorStop(1, `hsla(215, 90%, 55%, ${opacity})`);
 
             ctx.beginPath();
             ctx.moveTo(node.x, node.y);
@@ -112,34 +136,37 @@ const NeuralNetwork = () => {
 
         // Draw node
         const nodeGradient = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, 4);
-        nodeGradient.addColorStop(0, 'hsla(199, 89%, 70%, 1)');
-        nodeGradient.addColorStop(0.5, 'hsla(199, 89%, 48%, 0.8)');
-        nodeGradient.addColorStop(1, 'hsla(199, 89%, 48%, 0)');
+        nodeGradient.addColorStop(0, 'hsla(28, 95%, 70%, 1)');
+        nodeGradient.addColorStop(0.5, 'hsla(28, 95%, 55%, 0.8)');
+        nodeGradient.addColorStop(1, 'hsla(28, 95%, 55%, 0)');
 
         ctx.beginPath();
         ctx.arc(node.x, node.y, 4, 0, Math.PI * 2);
         ctx.fillStyle = nodeGradient;
         ctx.fill();
 
-        // Draw glow
-        const glowGradient = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, 15);
-        glowGradient.addColorStop(0, 'hsla(199, 89%, 48%, 0.3)');
-        glowGradient.addColorStop(1, 'hsla(199, 89%, 48%, 0)');
+        // Draw glow (skip on mobile to save GPU)
+        if (!isMobile) {
+          const glowGradient = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, 15);
+          glowGradient.addColorStop(0, 'hsla(28, 95%, 55%, 0.3)');
+          glowGradient.addColorStop(1, 'hsla(28, 95%, 55%, 0)');
 
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, 15, 0, Math.PI * 2);
-        ctx.fillStyle = glowGradient;
-        ctx.fill();
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, 15, 0, Math.PI * 2);
+          ctx.fillStyle = glowGradient;
+          ctx.fill();
+        }
       });
 
       animationRef.current = requestAnimationFrame(animate);
     };
 
-    animate();
+    animationRef.current = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
       window.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('visibilitychange', handleVisibility);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }

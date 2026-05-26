@@ -12,6 +12,7 @@ interface Particle {
 const ParticleField = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
+  const isPausedRef = useRef(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -19,6 +20,8 @@ const ParticleField = () => {
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    const isMobile = window.innerWidth < 768;
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
@@ -28,10 +31,20 @@ const ParticleField = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Initialize particles
-    const particleCount = 50;
+    // Pause when tab is not visible
+    const handleVisibility = () => {
+      isPausedRef.current = document.hidden;
+      if (!document.hidden && !animationRef.current) {
+        lastFrameTime = 0;
+        animationRef.current = requestAnimationFrame(animate);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    // Fewer particles on mobile
+    const particleCount = isMobile ? 20 : 50;
     const particles: Particle[] = [];
-    const hues = [199, 263, 172]; // Primary, secondary, accent
+    const hues = [28, 215, 45]; // Orange, Navy Blue, Amber/Gold
 
     for (let i = 0; i < particleCount; i++) {
       particles.push({
@@ -44,7 +57,22 @@ const ParticleField = () => {
       });
     }
 
-    const animate = () => {
+    // Throttle to ~30fps
+    const frameInterval = 1000 / 30;
+    let lastFrameTime = 0;
+
+    const animate = (timestamp: number) => {
+      if (isPausedRef.current) {
+        animationRef.current = undefined;
+        return;
+      }
+
+      animationRef.current = requestAnimationFrame(animate);
+
+      const delta = timestamp - lastFrameTime;
+      if (delta < frameInterval) return;
+      lastFrameTime = timestamp - (delta % frameInterval);
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       particles.forEach((particle) => {
@@ -79,14 +107,13 @@ const ParticleField = () => {
         ctx.fillStyle = `hsla(${particle.hue}, 80%, 70%, ${particle.opacity})`;
         ctx.fill();
       });
-
-      animationRef.current = requestAnimationFrame(animate);
     };
 
-    animate();
+    animationRef.current = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
+      document.removeEventListener('visibilitychange', handleVisibility);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }

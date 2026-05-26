@@ -4,34 +4,35 @@ import { useEffect, useRef } from 'react';
 const wordCategories = {
   ml: {
     terms: ['CNN', 'RNN', 'LSTM', 'GAN', 'VAE', 'TRAIN', 'EPOCH', 'GRADIENT', 'TENSOR', 'LAYER', 'WEIGHT', 'BIAS'],
-    hue: 199, // Cyan
-    saturation: 89
+    hue: 28, // Orange
+    saturation: 95
   },
   ai: {
     terms: ['GPT', 'LLM', 'NLP', 'NEURAL', 'DEEP', 'TRANSFORMER', 'INFERENCE', 'MODEL', 'PREDICT'],
-    hue: 270, // Purple
-    saturation: 80
+    hue: 215, // Navy Blue
+    saturation: 90
   },
   data: {
     terms: ['DATA', 'ANALYTICS', 'SCIENCE', 'FEATURE', 'CLASSIFY', 'CLUSTER', 'REGRESS', 'ALGORITHM'],
-    hue: 160, // Green
-    saturation: 84
+    hue: 45, // Amber/Gold
+    saturation: 93
   },
   general: {
     terms: ['AI', 'ML', 'LEARNING', 'AUTOMATION', 'RPA', 'VISION', 'NETWORK', 'NODE', 'CODE'],
-    hue: 330, // Pink
-    saturation: 85
+    hue: 215, // Soft Blue
+    saturation: 60
   }
 };
 
 // Flatten and tag all terms with their colors
-const allTerms = Object.entries(wordCategories).flatMap(([category, { terms, hue, saturation }]) =>
+const allTerms = Object.entries(wordCategories).flatMap(([_category, { terms, hue, saturation }]) =>
   terms.map(term => ({ term, hue, saturation }))
 );
 
 const CodeRain = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
+  const isPausedRef = useRef(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -39,6 +40,15 @@ const CodeRain = () => {
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    // Detect mobile for reduced workload
+    const isMobile = window.innerWidth < 768;
+
+    // Skip entirely on very small screens
+    if (window.innerWidth < 480) {
+      canvas.style.display = 'none';
+      return;
+    }
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
@@ -48,8 +58,18 @@ const CodeRain = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    const fontSize = 20;
-    const columnSpacing = fontSize * 4;
+    // Pause when tab is not visible
+    const handleVisibility = () => {
+      isPausedRef.current = document.hidden;
+      if (!document.hidden && !animationRef.current) {
+        lastFrameTime = 0;
+        animationRef.current = requestAnimationFrame(animate);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    const fontSize = 15;
+    const columnSpacing = isMobile ? fontSize * 8 : fontSize * 5;
     const columns = Math.floor(canvas.width / columnSpacing);
     
     interface ColumnState {
@@ -62,14 +82,22 @@ const CodeRain = () => {
       speed: number;
     }
     
-    const getRandomTerm = () => {
-      const item = allTerms[Math.floor(Math.random() * allTerms.length)];
-      return item;
+    let termQueue: typeof allTerms = [];
+
+    const getNextTerm = () => {
+      if (termQueue.length === 0) {
+        termQueue = [...allTerms];
+        for (let i = termQueue.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [termQueue[i], termQueue[j]] = [termQueue[j], termQueue[i]];
+        }
+      }
+      return termQueue.pop()!;
     };
 
     const columnStates: ColumnState[] = new Array(columns).fill(null).map(() => {
       const startY = Math.random() * -100 - 10;
-      const { term, hue, saturation } = getRandomTerm();
+      const { term, hue, saturation } = getNextTerm();
       return {
         term,
         hue,
@@ -77,14 +105,28 @@ const CodeRain = () => {
         y: startY,
         revealCount: 1,
         lastRevealY: startY,
-        speed: 0.06 + Math.random() * 0.04
+        speed: 0.05 + Math.random() * 0.04
       };
     });
 
-    const animate = () => {
-      // Clear canvas completely each frame
-      ctx.fillStyle = 'rgb(10, 15, 25)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Throttle to ~30fps
+    const frameInterval = 1000 / 30;
+    let lastFrameTime = 0;
+
+    const animate = (timestamp: number) => {
+      if (isPausedRef.current) {
+        animationRef.current = undefined;
+        return;
+      }
+
+      animationRef.current = requestAnimationFrame(animate);
+
+      const delta = timestamp - lastFrameTime;
+      if (delta < frameInterval) return;
+      lastFrameTime = timestamp - (delta % frameInterval);
+
+      // Clear canvas to keep it fully transparent
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       ctx.font = `bold ${fontSize}px monospace`;
 
@@ -104,27 +146,29 @@ const CodeRain = () => {
           if (isLeadingChar) {
             // Bright leading character with glow in category color
             ctx.shadowColor = `hsla(${state.hue}, ${state.saturation}%, 60%, 0.8)`;
-            ctx.shadowBlur = 8;
+            ctx.shadowBlur = 6;
             ctx.fillStyle = `hsla(${state.hue}, ${state.saturation}%, 95%, 1)`;
             ctx.fillText(char, x, yPos);
             ctx.shadowBlur = 0;
           } else {
-            // Trail letters in category color
+            // Trail letters fade smoothly into transparency using alpha HSL
             const distanceFromHead = state.revealCount - 1 - k;
-            const lightness = Math.max(40, 70 - distanceFromHead * 8);
-            ctx.fillStyle = `hsla(${state.hue}, ${state.saturation}%, ${lightness}%, 1)`;
+            const opacity = Math.max(0.1, 0.7 - distanceFromHead * 0.12);
+            ctx.fillStyle = `hsla(${state.hue}, ${state.saturation}%, 55%, ${opacity})`;
             ctx.fillText(char, x, yPos);
           }
         }
 
-        // Draw fading trail behind the word
-        for (let trail = 1; trail <= 4; trail++) {
-          const trailY = Math.floor(state.y + state.revealCount - 1 + trail) * fontSize;
-          if (trailY > 0 && trailY < canvas.height) {
-            const trailOpacity = 0.3 - (trail * 0.07);
-            if (trailOpacity > 0) {
-              ctx.fillStyle = `hsla(${state.hue}, ${state.saturation}%, 50%, ${trailOpacity})`;
-              ctx.fillText('│', x, trailY);
+        // Draw fading trail line behind the word (skip on mobile for perf)
+        if (!isMobile) {
+          for (let trail = 1; trail <= 4; trail++) {
+            const trailY = Math.floor(state.y + state.revealCount - 1 + trail) * fontSize;
+            if (trailY > 0 && trailY < canvas.height) {
+              const trailOpacity = 0.2 - (trail * 0.05);
+              if (trailOpacity > 0) {
+                ctx.fillStyle = `hsla(${state.hue}, ${state.saturation}%, 50%, ${trailOpacity})`;
+                ctx.fillText('│', x, trailY);
+              }
             }
           }
         }
@@ -137,26 +181,25 @@ const CodeRain = () => {
 
         // Reset when word exits screen
         if (state.y * fontSize > canvas.height + fontSize * 2) {
-          const { term, hue, saturation } = getRandomTerm();
+          const { term, hue, saturation } = getNextTerm();
           state.term = term;
           state.hue = hue;
           state.saturation = saturation;
           state.y = -state.term.length - Math.random() * 30;
           state.revealCount = 1;
           state.lastRevealY = state.y;
-          state.speed = 0.08 + Math.random() * 0.05;
+          state.speed = 0.06 + Math.random() * 0.04;
         }
 
         state.y += state.speed;
       }
-
-      animationRef.current = requestAnimationFrame(animate);
     };
 
-    animate();
+    animationRef.current = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
+      document.removeEventListener('visibilitychange', handleVisibility);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
@@ -167,7 +210,7 @@ const CodeRain = () => {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.5 }}
+      style={{ opacity: 0.75 }}
     />
   );
 };

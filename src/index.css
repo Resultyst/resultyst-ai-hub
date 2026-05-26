@@ -5,24 +5,24 @@
 /* Resultyst Design System - AI Lab Aesthetic with Multi-Color Accents */
 @layer base {
   :root {
-    /* Core dark theme */
-    --background: 220 25% 6%;
+    /* Core dark theme - sleek ultra-black */
+    --background: 220 10% 2%;
     --foreground: 210 20% 98%;
     
-    /* Primary - Electric Cyan */
-    --primary: 199 89% 48%;
+    /* Primary - Vibrant Orange */
+    --primary: 28 95% 55%;
     --primary-foreground: 220 25% 6%;
     
-    /* Secondary - Vibrant Purple */
-    --secondary: 270 80% 60%;
+    /* Secondary - Premium Navy Blue */
+    --secondary: 215 90% 55%;
     --secondary-foreground: 220 25% 6%;
     
-    /* Accent - Hot Pink/Magenta */
-    --accent: 330 85% 60%;
+    /* Accent - Amber/Gold */
+    --accent: 45 93% 58%;
     --accent-foreground: 220 25% 6%;
     
-    /* Tertiary - Emerald Green */
-    --tertiary: 160 84% 45%;
+    /* Tertiary - Muted Navy */
+    --tertiary: 215 60% 40%;
     --tertiary-foreground: 220 25% 6%;
     
     /* Muted elements */
@@ -34,45 +34,50 @@
     --destructive-foreground: 210 20% 98%;
     
     /* UI Components */
-    --card: 220 25% 8%;
+    --card: 220 10% 4%;
     --card-foreground: 210 20% 98%;
-    --popover: 220 25% 7%;
+    --popover: 220 10% 3%;
     --popover-foreground: 210 20% 98%;
     --border: 220 20% 18%;
     --input: 220 20% 18%;
-    --ring: 199 89% 48%;
+    --ring: 28 95% 55%;
     
-    /* Chart colors - Multi-spectrum */
-    --chart-1: 199 89% 48%;
-    --chart-2: 270 80% 60%;
-    --chart-3: 330 85% 60%;
-    --chart-4: 160 84% 45%;
-    --chart-5: 45 93% 58%;
+    /* Chart colors - Brand-spectrum */
+    --chart-1: 28 95% 55%;
+    --chart-2: 215 90% 55%;
+    --chart-3: 45 93% 58%;
+    --chart-4: 215 60% 40%;
+    --chart-5: 28 85% 40%;
     
-    /* Glow effects - Multi-color */
-    --glow-primary: 199 89% 48%;
-    --glow-secondary: 270 80% 60%;
-    --glow-accent: 330 85% 60%;
-    --glow-tertiary: 160 84% 45%;
+    /* Glow effects - Brand-theme */
+    --glow-primary: 28 95% 55%;
+    --glow-secondary: 215 90% 55%;
+    --glow-accent: 45 93% 58%;
+    --glow-tertiary: 215 60% 40%;
+    
+    /* Gradient text helpers */
+    --gradient-start: 28 95% 55%;
+    --gradient-mid: 45 93% 58%;
+    --gradient-end: 215 90% 55%;
     
     /* Glass effects */
     --glass-bg: 220 25% 10% / 0.6;
     --glass-border: 220 20% 25% / 0.3;
     
     /* Neural network aesthetics */
-    --neural-node: 199 89% 48%;
-    --neural-connection: 270 80% 60%;
-    --neural-pulse: 330 85% 60%;
+    --neural-node: 28 95% 55%;
+    --neural-connection: 215 90% 55%;
+    --neural-pulse: 45 93% 58%;
     
     /* Sidebar */
     --sidebar-background: 220 25% 7%;
     --sidebar-foreground: 210 20% 98%;
-    --sidebar-primary: 199 89% 48%;
+    --sidebar-primary: 28 95% 55%;
     --sidebar-primary-foreground: 220 25% 6%;
     --sidebar-accent: 220 25% 12%;
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 210 30% 15%;
-    --sidebar-ring: 199 89% 48%;
+    --sidebar-ring: 28 95% 55%;
     
     /* Radius */
     --radius: 0.75rem;
@@ -90,11 +95,16 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background-image: 
-      radial-gradient(ellipse at 20% 20%, hsl(var(--glow-primary) / 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 80%, hsl(var(--glow-secondary) / 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 50%, hsl(var(--glow-accent) / 0.03) 0%, transparent 70%);
+      radial-gradient(ellipse at 20% 20%, hsl(var(--glow-primary) / 0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, hsl(var(--glow-secondary) / 0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, hsl(var(--glow-accent) / 0.02) 0%, transparent 70%);
     background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
   }
 }
 
@@ -239,5 +249,29 @@
       hsl(var(--background) / 0.03) 4px
     );
     pointer-events: none;
+  }
+
+  .card-panel {
+    /* ──────────────────────────────────────────────────
+       Glassmorphism — translucent dark panels that let
+       the CodeRain AI terminology rain bleed through
+       visibly while keeping content readable.
+       ────────────────────────────────────────────────── */
+
+    /* Highly transparent dark glass */
+    background: linear-gradient(
+      180deg,
+      hsla(220, 18%, 6%, 0.28) 0%,
+      hsla(220, 14%, 4%, 0.38) 100%
+    );
+
+    /* Light backdrop blur — frosted but rain stays visible */
+    backdrop-filter: blur(10px) saturate(1.2);
+    -webkit-backdrop-filter: blur(10px) saturate(1.2);
+
+    /* GPU-accelerated for smooth scroll transforms */
+    will-change: transform;
+    transform-origin: center top;
+    backface-visibility: hidden;
   }
 }

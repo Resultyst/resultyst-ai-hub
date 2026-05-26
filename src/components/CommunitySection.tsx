@@ -29,7 +29,7 @@ const socialLinks = [
     color: 'from-green-500 to-green-600',
     hoverGlow: 'hover:shadow-[0_0_30px_rgba(34,197,94,0.4)]',
     url: 'https://whatsapp.com/channel/0029Vb5BpZWFXUubAH4nWI37',
-    cta: 'Follow',
+    cta: 'Join',
   },
 ];
 
@@ -38,28 +38,40 @@ const CommunitySection = () => {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section ref={ref} className="relative py-24 px-4">
-      <div className="max-w-4xl mx-auto">
+    <section id="community" ref={ref} className="relative h-full w-full flex flex-col items-center justify-center overflow-hidden px-4 py-8">
+      <div className="w-full max-w-5xl mx-auto px-4 sm:px-6">
         {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16 w-full max-w-2xl mx-auto"
         >
-          <span className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider uppercase rounded-full bg-accent/20 text-accent">
+          <span 
+            className="inline-block px-4 py-1 rounded-full text-sm font-medium mb-4"
+            style={{
+              background: 'linear-gradient(135deg, hsla(28, 95%, 55%, 0.2), hsla(215, 90%, 55%, 0.1))',
+              border: '1px solid hsla(28, 95%, 55%, 0.3)',
+              color: 'hsl(28, 95%, 70%)'
+            }}
+          >
             Connect
           </span>
-          <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            Join the Community
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-4">
+            <span 
+              className="bg-clip-text text-transparent"
+              style={{ backgroundImage: 'linear-gradient(135deg, hsl(28, 95%, 60%), hsl(215, 90%, 60%))' }}
+            >
+              Join the Community
+            </span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Be part of a growing community exploring the future of AI and technology.
+          <p className="text-white text-base sm:text-lg max-w-2xl mx-auto">
+            Be part of a growing community exploring the future of AI and technology
           </p>
         </motion.div>
 
         {/* Social links */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
           {socialLinks.map(({ name, description, icon: Icon, color, hoverGlow, url,cta }, index) => (
             <motion.a
               key={name}
@@ -88,7 +100,7 @@ const CommunitySection = () => {
               <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors duration-300">
                 {name}
               </h3>
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-sm text-slate-300 mb-4">
                 {description}
               </p>
 
