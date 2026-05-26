@@ -27,15 +27,11 @@ interface StickyCardProps {
 }
 
 const StickyCard = ({ component, accentColor, index, total, scrollYProgress }: StickyCardProps) => {
-  const [isDesktopWidth, setIsDesktopWidth] = useState(false);
-  const [isDesktopSticky, setIsDesktopSticky] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
     const checkSize = () => {
-      const widthCheck = window.innerWidth >= 768;
-      const heightCheck = window.innerHeight >= 700;
-      setIsDesktopWidth(widthCheck);
-      setIsDesktopSticky(widthCheck && heightCheck);
+      setIsDesktop(window.innerWidth >= 768);
     };
     checkSize();
     window.addEventListener('resize', checkSize);
@@ -71,11 +67,11 @@ const StickyCard = ({ component, accentColor, index, total, scrollYProgress }: S
     [1, 1, 0, 0]
   );
 
-  // Conditional transforms only active when sticky layout criteria is met
-  const scale = !isDesktopSticky || isLast ? 1 : rawScale;
-  const scrimOpacity = !isDesktopSticky || isLast ? 0 : rawScrimOpacity;
-  const translateY = !isDesktopSticky || isLast ? 0 : rawTranslateY;
-  const contentOpacity = !isDesktopSticky || isLast ? 1 : rawOpacity;
+  // Conditional transforms only active when sticky layout is active (width >= 768px)
+  const scale = !isDesktop || isLast ? 1 : rawScale;
+  const scrimOpacity = !isDesktop || isLast ? 0 : rawScrimOpacity;
+  const translateY = !isDesktop || isLast ? 0 : rawTranslateY;
+  const contentOpacity = !isDesktop || isLast ? 1 : rawOpacity;
 
   return (
     <div
@@ -85,7 +81,7 @@ const StickyCard = ({ component, accentColor, index, total, scrollYProgress }: S
       <motion.div
         className="card-panel relative h-auto md:h-[88vh] w-full md:w-[94%] md:max-w-6xl py-12 md:py-0 flex items-center justify-center"
         style={{
-          borderRadius: isDesktopWidth ? '1.75rem' : '1.25rem',
+          borderRadius: isDesktop ? '1.75rem' : '1.25rem',
           overflow: 'hidden',
           scale,
           y: translateY,
